@@ -1,0 +1,13 @@
+-- Table: public.persons
+-- DROP TABLE public.persons;
+CREATE TABLE public.persons
+(
+    first_name character varying(50) COLLATE pg_catalog."default",
+    last_name character varying(50) COLLATE pg_catalog."default",
+    dob date,
+    email character varying(255) COLLATE pg_catalog."default"
+) 
+TABLESPACE pg_default;
+
+ALTER TABLE public.persons
+    OWNER to postgres;
