@@ -1,0 +1,61 @@
+# Import the domomagic package into the script 
+from domomagic import * 
+from numpy import *
+from pandas import *
+from fuzzywuzzy import fuzz
+
+
+# read data from inputs into a data frame
+df = read_dataframe('Opportunity CH7')
+
+# write your script here
+df['LeadSourceCleaned']=False
+df['LeadSource'] = (df['LeadSource'].str.title())
+df['LeadSource'].fillna("Unknown", inplace = True)
+
+# Fuzzy Match Arrary
+fuzar = {'Partner', 'Referral', 'Direct', 'Inc', 'Event', 'Marketing','Strategic Account Marketing','Sales','Social'}
+
+# Contains Match Array
+containar = {'cur':['Strategic','Jigsaw','Social','Event','Sales'],
+        	 'mapto':['Sales','Marketing','Marketing','Event','Sales'] }
+
+#Mapping Array
+mapar = {'cur':['Efeal','Patneing'],
+         'mapto':['Referral','Partner']}
+
+# Loop through all Opptys
+for i in range(len(df['LeadSource'])) : 
+  ls = df['LeadSource'].iloc[i]
+                   
+  # Map ========================
+  for j in range(len( mapar['cur'])) :
+    compsrc = mapar['cur'][j]
+    newls = mapar['mapto'][j]
+    if compsrc == ls :
+      df.iloc[i,0] = newls
+      df.iloc[i,2] = True
+      print(i, 'MAPPED from', ls, 'TO', newls )
+      ls = newls
+  
+  # fuzzy=======================
+  for newls in fuzar :
+    score = fuzz.ratio( newls, ls)
+    if (score >= 60 and score < 100) :
+      df.iloc[i,0] = newls
+      df.iloc[i,2] = True
+      print(i, 'FUZZY REPLACED', ls, 'WITH', newls, score)
+      ls = newls
+      
+  # contains ===================    
+  for j in range(len(containar['cur'])) :
+    compsrc = containar['cur'][j]
+    newls = containar['mapto'][j]
+    if compsrc.lower() in ls.lower() and compsrc != ls :
+      df.iloc[i,0] = newls
+      df.iloc[i,2] = True
+      print(i,'CONTAINS FOUND', compsrc, 'REPLACED', ls, 'WITH', newls)
+      ls = newls
+
+# write a data frame so it's available to the next action
+write_dataframe(df)
