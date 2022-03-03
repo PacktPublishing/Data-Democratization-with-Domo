@@ -1,0 +1,40 @@
+-- Target Variance
+concat(case when sum(`Variance`) <0 
+then concat('<a style="color:red"> Missed ',`Fiscal Quarter`, ' Target by $', round(sum(`Variance`)/1000000,1),'M or ',round(((sum(`Actual`)/sum(`Budget`))-1)*100,1),'% </a>') 
+else concat('<a style="color:green"> Beat ',`Fiscal Quarter`, ' Target by $', round(sum(`Variance`)/1000000,1), 'M or '  ,round(((sum(`Actual`)/sum(`Budget`))-1)*100,1),'%</a>')
+end,
+       
+-- YoY Actual Variance 
+concat('<a style="color:black"> | Sales of </a>'),
+
+case -- Beat
+when (sum(case when left(`Period`,4) = year('1/1/2020') then `Actual` else 0 end)
+- sum(case when left(`Period`,4) = year('1/1/2020')-1 then `Actual` else 0 end)) > 0 
+then concat('<a style="color:green">$', 
+round(sum(case when left(`Period`,4) = year('1/1/2020') 
+then `Actual` end )/1000000,1) ,'M',' are Over Prior Year by $',
+     -- Prior Year Variance
+Round((sum(case when left(`Period`,4) = year('1/1/2020') then `Actual` else 0 end)
+- sum(case when left(`Period`,4) = year('1/1/2020')-1 then `Actual` else 0 end)) / 1000000, 1), 'M or ',
+     -- Prior Year Variance %
+Round(((sum(case when left(`Period`,4) = year('1/1/2020') then `Actual` else 0 end)
+/ sum(case when left(`Period`,4) = year('1/1/2020')-1 then `Actual` else 0 end))-1)*100,1),'%</a>')
+       
+-- Met       
+when (sum(case when left(`Period`,4) = year('1/1/2020') then `Actual` else 0 end)
+- sum(case when left(`Period`,4) = year('1/1/2020')-1 then `Actual` else 0 end)) = 0 
+then concat('<a style="color:blue">$', 
+round(sum(case when left(`Period`,4) = year('1/1/2020') 
+then `Actual` end )/1000000,1) ,'M Matched Prior Year</a>') 
+       
+-- Missed
+else concat('<a style="color:red">$', round(sum(case when left(`Period`,4) = year('1/1/2020') 
+then `Actual` end )/1000000,1) ,'M',' are Under Prior Year by $',
+            -- Prior Year Variance
+Round((sum(case when left(`Period`,4) = year('1/1/2020') then `Actual` else 0 end)
+- sum(case when left(`Period`,4) = year('1/1/2020')-1 then `Actual` else 0 end)) / 1000000, 1), 'M or ',
+            -- Prior Year Variance %
+Round(((sum(case when left(`Period`,4) = year('1/1/2020') then `Actual` else 0 end)
+/ sum(case when left(`Period`,4) = year('1/1/2020')-1 
+    then `Actual` else 0 end))-1)*100, 1),'%</a>') end 
+)
