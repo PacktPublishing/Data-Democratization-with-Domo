@@ -65,3 +65,7 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 As head of Solution Architecture, he created solutions for many Fortune 500 companies. He is passionate about showing the economic impact of BI initiatives.
 Currently, as CEO of consultancy Winning Through Value (WtV) Associates, he engages in value assessment initiatives and Domo consultancy.
 Before Domo, he held roles in various organizations leading data warehouse buildouts, BI operations, and custom software development teams.
+### Download a free PDF
+
+ <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
+<p align="center"> <a href="https://packt.link/free-ebook/9781800568426">https://packt.link/free-ebook/9781800568426 </a> </p>
